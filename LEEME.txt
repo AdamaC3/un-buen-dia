@@ -1,0 +1,21 @@
+UN BUEN DÍA — aplicación web instalable
+
+QUÉ INCLUYE
+- Una frase profunda y una reflexión breve para cada día.
+- Frase distinta según la fecha local; el mismo día conserva la misma frase.
+- Guardar y quitar favoritas.
+- Historial de hasta 90 días.
+- Compartir y copiar.
+- Funciona sin conexión después de la primera carga (cuando está alojada en HTTPS).
+
+INSTALACIÓN EN IPHONE
+1. Publicá el contenido de esta carpeta en un hosting HTTPS (por ejemplo, GitHub Pages).
+2. Abrí la dirección publicada en Safari desde el iPhone.
+3. Tocá Compartir y luego “Añadir a pantalla de inicio”.
+4. Confirmá “Añadir”. Abrí la app desde el nuevo ícono.
+
+IMPORTANTE SOBRE EL RECORDATORIO
+Esta versión no envía notificaciones automáticas cuando está cerrada. En iPhone, las notificaciones web requieren una versión alojada, permisos y un servicio push configurado; no sería honesto prometer una alarma diaria con esta versión local.
+
+PERSONALIZACIÓN
+Las frases están en app.js, en el arreglo `entries`. Podés agregar más pares [frase, reflexión].
