@@ -93,4 +93,257 @@
       box-shadow:inset 0 0 40px #c9a56a14;
       pointer-events:none;
     }
-    .hero-em
+    .hero-emblem::after{
+      content:"";
+      position:absolute;
+      inset:24px;
+      border-radius:50%;
+      border:1px dashed #c9a56a33;
+    }
+    .hero-top{
+      font:600 11px system-ui,-apple-system,sans-serif;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color:var(--gold);
+      opacity:.9;
+    }
+    .hero-label{
+      position:relative;
+      z-index:2;
+      font:600 12px/1.5 system-ui,-apple-system,sans-serif;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:#d5cbb9;
+    }
+    .card{
+      background:linear-gradient(180deg,var(--surface) 0%,#181614 100%);
+      border:1px solid var(--border);
+      border-top:2px solid var(--gold-dim);
+      border-radius:24px;
+      padding:28px 24px 24px;
+      box-shadow:0 18px 44px #00000055;
+    }
+    .eyebrow{
+      font:600 11px system-ui,-apple-system,sans-serif;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+      color:var(--gold);
+      margin-bottom:18px;
+    }
+    blockquote{
+      font-size:clamp(25px,5.8vw,36px);
+      line-height:1.24;
+      letter-spacing:-.02em;
+      margin:0 0 20px;
+      color:#f4efe6;
+    }
+    .reflection{
+      font:15px/1.65 system-ui,-apple-system,sans-serif;
+      color:#b8afa1;
+      margin:0;
+      padding-top:16px;
+      border-top:1px solid var(--border);
+    }
+    .actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+    button{
+      border:0;
+      border-radius:999px;
+      padding:11px 16px;
+      font:600 13px system-ui,-apple-system,sans-serif;
+      cursor:pointer;
+      transition:transform .12s,opacity .15s;
+    }
+    .primary{
+      background:linear-gradient(135deg,#b58d4f 0%,#8f6b34 100%);
+      color:#141210;
+    }
+    .secondary{
+      background:var(--surface-hi);
+      color:#dfd7c8;
+      border:1px solid var(--border);
+    }
+    button:active{transform:scale(.97)}
+    nav{display:flex;gap:8px;margin:22px 0 14px;font-family:system-ui,-apple-system,sans-serif}
+    .tab{
+      background:transparent;
+      color:var(--muted);
+      padding:9px 14px;
+      border:1px solid transparent;
+    }
+    .tab.active{
+      background:var(--surface-hi);
+      color:var(--gold);
+      border-color:var(--border);
+    }
+    .section{display:none}.section.active{display:block}
+    .section-title{font-size:20px;margin:18px 0 12px;color:#e6dec8}
+    .list{display:grid;gap:10px}
+    .item{
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px 17px;
+    }
+    .item p{font-size:18px;line-height:1.35;margin:0 0 9px;color:#f1ece1}
+    .item small{font:12px/1.45 system-ui,-apple-system,sans-serif;color:var(--muted);display:block}
+    .item button{margin-top:10px;padding:7px 12px;font-size:12px}
+    .empty{
+      font:14px/1.6 system-ui,-apple-system,sans-serif;
+      color:#afa698;
+      background:var(--surface);
+      border:1px solid var(--border);
+      padding:18px;
+      border-radius:18px;
+    }
+    footer{
+      text-align:center;
+      font:12px system-ui,-apple-system,sans-serif;
+      letter-spacing:.08em;
+      color:#7a7266;
+      margin-top:30px;
+    }
+    .toast{
+      position:fixed;
+      bottom:calc(18px + env(safe-area-inset-bottom));
+      left:50%;
+      transform:translateX(-50%);
+      background:#26221c;
+      color:var(--gold);
+      border:1px solid var(--gold-dim);
+      padding:11px 18px;
+      border-radius:99px;
+      font:600 13px system-ui,-apple-system,sans-serif;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s;
+      z-index:50;
+      text-align:center;
+      max-width:90vw;
+      box-shadow:0 10px 28px #00000080;
+    }
+    .toast.show{opacity:1}
+  </style>
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <div class="brand">⚔ UN BUEN DÍA</div>
+    <div class="header-right">
+      <button class="notify-btn" id="notify-btn" type="button">🔔 Activar aviso diario</button>
+      <div class="day" id="date"></div>
+    </div>
+  </header>
+  <section class="hero" aria-label="Temple estoico">
+    <div class="hero-emblem"></div>
+    <div class="hero-top">MEMENTO MORI · AMOR FATI</div>
+    <div class="hero-label">Entrá a la arena con calma. Dominá tu mente y el día es tuyo.</div>
+  </section>
+  <section class="card">
+    <div class="eyebrow">Principio del día · <span id="number"></span></div>
+    <blockquote id="quote"></blockquote>
+    <p class="reflection" id="reflection"></p>
+    <div class="actions">
+      <button class="primary" id="favorite">☆ Guardar sentencia</button>
+      <button class="secondary" id="share">Compartir</button>
+      <button class="secondary" id="copy">Copiar</button>
+    </div>
+  </section>
+  <nav>
+    <button class="tab active" data-tab="today">Hoy</button>
+    <button class="tab" data-tab="favorites">Guardadas</button>
+    <button class="tab" data-tab="history">Jornadas anteriores</button>
+  </nav>
+  <section class="section active" id="today"><p class="empty">No esperes a que la tormenta pase para demostrar quién sos. Sostené tu estándar hoy.</p></section>
+  <section class="section" id="favorites"><h2 class="section-title">Sentencias guardadas</h2><div class="list" id="favorite-list"></div></section>
+  <section class="section" id="history"><h2 class="section-title">Camino recorrido</h2><div class="list" id="history-list"></div></section>
+  <footer>Forjado para templar tus mañanas. ⚔️</footer>
+</main>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  (function() {
+    const btn = document.getElementById("notify-btn");
+    const toastEl = document.getElementById("toast");
+    let osInstance = null;
+
+    function showToast(msg) {
+      if (!toastEl) return;
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      setTimeout(() => toastEl.classList.remove("show"), 4500);
+    }
+
+    function isNativeGranted() {
+      return ("Notification" in window) && Notification.permission === "granted";
+    }
+
+    function syncButtonUI() {
+      if (!btn) return;
+      const subId = osInstance && osInstance.User && osInstance.User.PushSubscription ? osInstance.User.PushSubscription.id : null;
+      if (subId) {
+        btn.textContent = "🔔 Conectada";
+        btn.classList.add("subscribed");
+      } else if (isNativeGranted()) {
+        btn.textContent = "🔔 Sincronizar";
+        btn.classList.remove("subscribed");
+      } else {
+        btn.textContent = "🔔 Activar aviso diario";
+        btn.classList.remove("subscribed");
+      }
+    }
+
+    syncButtonUI();
+
+    if (btn) {
+      btn.addEventListener("click", async () => {
+        const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+        if (!isStandalone) {
+          showToast("Abrí la app desde el ícono de pantalla de inicio.");
+          return;
+        }
+        if (!osInstance) {
+          showToast("SDK aún cargando. Revisá tu conexión y reintentá en 3 segundos.");
+          return;
+        }
+        try {
+          if (!isNativeGranted()) {
+            await osInstance.Notifications.requestPermission();
+          }
+          await osInstance.User.PushSubscription.optIn();
+          await new Promise(r => setTimeout(r, 1200));
+          syncButtonUI();
+          const subId = osInstance.User.PushSubscription.id;
+          if (subId) {
+            showToast("¡Suscripta! ID: " + subId.slice(0, 8) + "...");
+          } else {
+            showToast("Permiso OK, pero OneSignal aún no asignó ID. Revisá Site URL.");
+          }
+        } catch (err) {
+          showToast("Error OneSignal: " + (err && err.message ? err.message : String(err)));
+        }
+      });
+    }
+
+    OneSignalDeferred.push(async function(OneSignal) {
+      try {
+        await OneSignal.init({
+          appId: "1e41f3b5-1861-4298-9f9c-27a8d46bb6e0",
+          serviceWorkerParam: { scope: "/un-buen-dia/" },
+          serviceWorkerPath: "OneSignalSDKWorker.js"
+        });
+        osInstance = OneSignal;
+        if (isNativeGranted()) {
+          await OneSignal.User.PushSubscription.optIn();
+        }
+        syncButtonUI();
+        OneSignal.User.PushSubscription.addEventListener("change", syncButtonUI);
+      } catch (e) {
+        showToast("Fallo init: " + (e && e.message ? e.message : String(e)));
+      }
+    });
+  })();
+</script>
+</body>
+</html>
