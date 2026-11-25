@@ -34,4 +34,13 @@ function renderList(target,items,empty){const el=$(target);el.innerHTML='';if(!i
 function renderLists(){renderList('favorite-list',favs,'Todavía no guardaste frases. Tocá “Guardar frase” cuando una te acompañe.');renderList('history-list',history,'Todavía no hay días anteriores. Volvé mañana para sumar una nueva frase.')}
 renderLists();
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab))});
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    const regs = await navigator.serviceWorker.getRegistrations();
+    for (const reg of regs) {
+      if (reg.active && reg.active.scriptURL.endsWith('/sw.js')) {
+        await reg.unregister();
+      }
+    }
+  });
+}
