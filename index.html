@@ -53,18 +53,19 @@
   </style>
 
   <!-- OneSignal Web SDK v16 -->
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     OneSignalDeferred.push(async function(OneSignal) {
       await OneSignal.init({
-        appId: "1e41f3b5-1861-4298-9f9c-27a8d46bb6e0",
+        appId: "TU_ONESIGNAL_APP_ID",
         serviceWorkerParam: { scope: "/un-buen-dia/" },
         serviceWorkerPath: "/un-buen-dia/OneSignalSDKWorker.js"
       });
 
       const btn = document.getElementById("notify-btn");
       const toastEl = document.getElementById("toast");
+
       function showNotifyToast(msg) {
         if (!toastEl) return;
         toastEl.textContent = msg;
@@ -72,9 +73,14 @@
         setTimeout(() => toastEl.classList.remove("show"), 3200);
       }
 
+      function hasPermission() {
+        const nativeGranted = ("Notification" in window) && Notification.permission === "granted";
+        return Boolean(OneSignal.Notifications.permission || nativeGranted);
+      }
+
       function updateNotifyButton() {
         if (!btn) return;
-        if (OneSignal.Notifications.permission) {
+        if (hasPermission()) {
           btn.textContent = "🔔 Activas";
           btn.classList.add("subscribed");
         } else {
@@ -84,7 +90,9 @@
       }
 
       updateNotifyButton();
+      setTimeout(updateNotifyButton, 800);
       OneSignal.Notifications.addEventListener("permissionChange", updateNotifyButton);
+      OneSignal.User.PushSubscription.addEventListener("change", updateNotifyButton);
 
       if (btn) {
         btn.addEventListener("click", async () => {
@@ -93,11 +101,22 @@
             showNotifyToast("Primero tocá Compartir → Añadir a pantalla de inicio y abrila desde ahí.");
             return;
           }
-          if (OneSignal.Notifications.permission) {
-            showNotifyToast("Ya tenés las notificaciones activadas.");
+          if (("Notification" in window) && Notification.permission === "denied") {
+            showNotifyToast("Tenés las notificaciones bloqueadas en Ajustes > Notificaciones > Un Buen Día.");
             return;
           }
-          await OneSignal.Notifications.requestPermission();
+          if (hasPermission()) {
+            await OneSignal.User.PushSubscription.optIn();
+            updateNotifyButton();
+            showNotifyToast("Notificaciones activas y sincronizadas.");
+            return;
+          }
+          try {
+            await OneSignal.Notifications.requestPermission();
+            await OneSignal.User.PushSubscription.optIn();
+          } catch (e) {
+            showNotifyToast("No se pudo activar: " + (e?.message || "reintentá"));
+          }
           updateNotifyButton();
         });
       }
