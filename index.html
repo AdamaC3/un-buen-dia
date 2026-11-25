@@ -272,16 +272,23 @@
       if (!toastEl) return;
       toastEl.textContent = msg;
       toastEl.classList.add("show");
-      setTimeout(() => toastEl.classList.remove("show"), 4500);
+      setTimeout(() => toastEl.classList.remove("show"), 5000);
     }
 
     function isNativeGranted() {
       return ("Notification" in window) && Notification.permission === "granted";
     }
 
+    function getSub() {
+      return osInstance && osInstance.User && osInstance.User.PushSubscription
+        ? osInstance.User.PushSubscription
+        : null;
+    }
+
     function syncButtonUI() {
       if (!btn) return;
-      const subId = osInstance && osInstance.User && osInstance.User.PushSubscription ? osInstance.User.PushSubscription.id : null;
+      const sub = getSub();
+      const subId = sub && sub.id ? sub.id : null;
       if (subId) {
         btn.textContent = "🔔 Conectada";
         btn.classList.add("subscribed");
@@ -312,13 +319,16 @@
             await osInstance.Notifications.requestPermission();
           }
           await osInstance.User.PushSubscription.optIn();
-          await new Promise(r => setTimeout(r, 1200));
+          await new Promise(r => setTimeout(r, 1500));
           syncButtonUI();
-          const subId = osInstance.User.PushSubscription.id;
+          const sub = getSub();
+          const subId = sub && sub.id ? sub.id : null;
           if (subId) {
             showToast("¡Suscripta! ID: " + subId.slice(0, 8) + "...");
           } else {
-            showToast("Permiso OK, pero OneSignal aún no asignó ID. Revisá Site URL.");
+            const opted = sub && typeof sub.optedIn !== "undefined" ? sub.optedIn : "?";
+            const hasTok = sub && sub.token ? "si" : "no";
+            showToast("Sin ID (optIn=" + opted + ", tok=" + hasTok + "). Revisá Site URL.");
           }
         } catch (err) {
           showToast("Error OneSignal: " + (err && err.message ? err.message : String(err)));
@@ -331,7 +341,7 @@
         await OneSignal.init({
           appId: "1e41f3b5-1861-4298-9f9c-27a8d46bb6e0",
           serviceWorkerParam: { scope: "/un-buen-dia/" },
-          serviceWorkerPath: "OneSignalSDKWorker.js"
+          serviceWorkerPath: "/un-buen-dia/OneSignalSDKWorker.js"
         });
         osInstance = OneSignal;
         if (isNativeGranted()) {
