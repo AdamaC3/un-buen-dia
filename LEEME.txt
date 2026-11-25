@@ -1,0 +1,21 @@
+UN BUEN DÍA — aplicación web instalable con soporte OneSignal
+
+QUÉ INCLUYE
+- Una frase profunda y una reflexión breve para cada día.
+- Frase distinta según la fecha local; el mismo día conserva la misma frase.
+- Guardar y quitar favoritas.
+- Historial de hasta 90 días.
+- Compartir y copiar.
+- Funciona sin conexión después de la primera carga en HTTPS.
+- Preparada para suscribir dispositivos iOS (PWA en pantalla de inicio) mediante OneSignal Web SDK v16.
+
+PENDIENTES ANTES DE USAR EN PRODUCCIÓN
+1. Reemplazá TU_ONESIGNAL_APP_ID en index.html por tu App ID real de OneSignal.
+2. En el panel de OneSignal, configurá el Site URL en https://adamac3.github.io/un-buen-dia/.
+3. Para el envío automático diario de la frase, configurá una campaña recurrente en OneSignal o un workflow programado (por ejemplo, GitHub Actions) con tu REST API Key.
+
+INSTALACIÓN EN IPHONE
+1. Subí estos archivos a la raíz de tu repositorio de GitHub Pages y esperá el despliegue en HTTPS.
+2. Abrí https://adamac3.github.io/un-buen-dia/ en Safari.
+3. Tocá Compartir y luego “Añadir a pantalla de inicio”.
+4. Abrí la app desde el ícono creado en la pantalla de inicio y tocá “🔔 Activar aviso diario”.
