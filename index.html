@@ -61,6 +61,7 @@
       font-size:12px;
       font-weight:600;
       border-radius:999px;
+      -webkit-tap-highlight-color:transparent;
     }
     .notify-btn.subscribed{
       background:transparent;
@@ -222,77 +223,7 @@
     }
     .toast.show{opacity:1}
   </style>
-
-  <!-- OneSignal Web SDK v16 -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-        appId: "1e41f3b5-1861-4298-9f9c-27a8d46bb6e0",
-        serviceWorkerParam: { scope: "/un-buen-dia/" },
-        serviceWorkerPath: "/un-buen-dia/OneSignalSDKWorker.js"
-      });
-
-      const btn = document.getElementById("notify-btn");
-      const toastEl = document.getElementById("toast");
-
-      function showNotifyToast(msg) {
-        if (!toastEl) return;
-        toastEl.textContent = msg;
-        toastEl.classList.add("show");
-        setTimeout(() => toastEl.classList.remove("show"), 3200);
-      }
-
-      function hasPermission() {
-        const nativeGranted = ("Notification" in window) && Notification.permission === "granted";
-        return Boolean(OneSignal.Notifications.permission || nativeGranted);
-      }
-
-      function updateNotifyButton() {
-        if (!btn) return;
-        if (hasPermission()) {
-          btn.textContent = "🔔 Activas";
-          btn.classList.add("subscribed");
-        } else {
-          btn.textContent = "🔔 Activar aviso diario";
-          btn.classList.remove("subscribed");
-        }
-      }
-
-      updateNotifyButton();
-      setTimeout(updateNotifyButton, 800);
-      OneSignal.Notifications.addEventListener("permissionChange", updateNotifyButton);
-      OneSignal.User.PushSubscription.addEventListener("change", updateNotifyButton);
-
-      if (btn) {
-        btn.addEventListener("click", async () => {
-          const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
-          if (!isStandalone) {
-            showNotifyToast("Primero tocá Compartir → Añadir a pantalla de inicio y abrila desde ahí.");
-            return;
-          }
-          if (("Notification" in window) && Notification.permission === "denied") {
-            showNotifyToast("Tenés las notificaciones bloqueadas en Ajustes > Notificaciones > Un Buen Día.");
-            return;
-          }
-          if (hasPermission()) {
-            await OneSignal.User.PushSubscription.optIn();
-            updateNotifyButton();
-            showNotifyToast("Notificaciones activas y sincronizadas.");
-            return;
-          }
-          try {
-            await OneSignal.Notifications.requestPermission();
-            await OneSignal.User.PushSubscription.optIn();
-          } catch (e) {
-            showNotifyToast("No se pudo activar: " + (e?.message || "reintentá"));
-          }
-          updateNotifyButton();
-        });
-      }
-    });
-  </script>
 </head>
 <body>
 <main class="wrap">
@@ -330,4 +261,98 @@
 </main>
 <div class="toast" id="toast"></div>
 <script src="app.js"></script>
-</body></html>
+<script>
+  (function() {
+    const btn = document.getElementById("notify-btn");
+    const toastEl = document.getElementById("toast");
+    let osInstance = null;
+
+    function showToast(msg) {
+      if (!toastEl) return;
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      setTimeout(() => toastEl.classList.remove("show"), 3200);
+    }
+
+    function isNativeGranted() {
+      return ("Notification" in window) && Notification.permission === "granted";
+    }
+
+    function syncButtonUI() {
+      if (!btn) return;
+      const granted = isNativeGranted() || Boolean(osInstance && osInstance.Notifications && osInstance.Notifications.permission);
+      if (granted) {
+        btn.textContent = "🔔 Activas";
+        btn.classList.add("subscribed");
+      } else {
+        btn.textContent = "🔔 Activar aviso diario";
+        btn.classList.remove("subscribed");
+      }
+    }
+
+    // 1. Actualizar estado visual de inmediato al abrir la app
+    syncButtonUI();
+
+    // 2. Registrar el clic del botón siempre, sin depender de que OneSignal haya terminado de cargar
+    if (btn) {
+      btn.addEventListener("click", async () => {
+        const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+        if (!isStandalone) {
+          showToast("Abrí la app desde el ícono en tu pantalla de inicio.");
+          return;
+        }
+        if (("Notification" in window) && Notification.permission === "denied") {
+          showToast("Activá los permisos en Ajustes > Notificaciones > Un Buen Día.");
+          return;
+        }
+        if (!osInstance) {
+          if (isNativeGranted()) {
+            syncButtonUI();
+            showToast("Permiso activo. Conectando con el servidor...");
+          } else if ("Notification" in window) {
+            const res = await Notification.requestPermission();
+            syncButtonUI();
+            if (res === "granted") showToast("Notificaciones activadas.");
+          }
+          return;
+        }
+        try {
+          if (isNativeGranted()) {
+            await osInstance.User.PushSubscription.optIn();
+            syncButtonUI();
+            showToast("Notificaciones activas y sincronizadas.");
+          } else {
+            await osInstance.Notifications.requestPermission();
+            await osInstance.User.PushSubscription.optIn();
+            syncButtonUI();
+          }
+        } catch (err) {
+          showToast("Error al suscribir: " + (err && err.message ? err.message : "reintentá"));
+        }
+      });
+    }
+
+    // 3. Inicializar OneSignal y sincronizar suscripción en segundo plano
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    window.OneSignalDeferred.push(async function(OneSignal) {
+      try {
+        await OneSignal.init({
+          appId: "1e41f3b5-1861-4298-9f9c-27a8d46bb6e0",
+          serviceWorkerParam: { scope: "/un-buen-dia/" },
+          serviceWorkerPath: "/un-buen-dia/OneSignalSDKWorker.js"
+        });
+        osInstance = OneSignal;
+        if (isNativeGranted()) {
+          await OneSignal.User.PushSubscription.optIn();
+        }
+        syncButtonUI();
+        OneSignal.Notifications.addEventListener("permissionChange", syncButtonUI);
+        OneSignal.User.PushSubscription.addEventListener("change", syncButtonUI);
+      } catch (e) {
+        console.error("OneSignal init error:", e);
+      }
+    });
+  })();
+</script>
+</body>
+</html>
