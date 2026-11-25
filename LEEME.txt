@@ -1,0 +1,13 @@
+UN BUEN DÍA — Edición Estoica (PWA + OneSignal)
+
+QUÉ INCLUYE
+- Tus 21 sentencias exactas con una reflexión estoica / de gladiador para cada una.
+- Estética oscura en tonos obsidiana, piedra y bronce/oro con emblema de escudo.
+- Ya configurado con tu OneSignal App ID (1e41f3b5-1861-4298-9f9c-27a8d46bb6e0).
+- Sin conflicto de Service Workers (usa únicamente OneSignalSDKWorker.js).
+
+CÓMO ACTUALIZAR EN GITHUB Y IPHONE
+1. Subí los archivos de la carpeta un-buen-dia-main a la raíz de tu repo en GitHub (reemplazando los anteriores; podés borrar sw.js si sigue en el repo).
+2. En tu iPhone, eliminá el acceso directo viejo de la pantalla de inicio para limpiar la caché anterior.
+3. Abrí https://adamac3.github.io/un-buen-dia/ en Safari, tocá Compartir → Añadir a pantalla de inicio.
+4. Abrí la app desde el nuevo ícono en tu pantalla de inicio y tocá “🔔 Activar aviso diario”.

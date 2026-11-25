@@ -1,0 +1,25 @@
+{
+  "name": "Un Buen Día",
+  "short_name": "Un Buen Día",
+  "description": "Temple diario, disciplina y claridad estoica.",
+  "start_url": "/un-buen-dia/",
+  "scope": "/un-buen-dia/",
+  "display": "standalone",
+  "background_color": "#141311",
+  "theme_color": "#141311",
+  "lang": "es-AR",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

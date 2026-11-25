@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#141311">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Un Buen Día">
+  <meta name="description" content="Temple diario, disciplina y claridad estoica.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+  <title>Un Buen Día</title>
+  <style>
+    :root{
+      --bg:#141311;
+      --surface:#1d1b18;
+      --surface-hi:#26231e;
+      --ink:#ece6da;
+      --muted:#9b9284;
+      --gold:#c9a56a;
+      --gold-dim:#8b6f42;
+      --crimson:#7a2e26;
+      --border:#322d26;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--ink);
+      font-family:ui-serif,Georgia,"Times New Roman",serif;
+      background:radial-gradient(circle at 50% 0%,#26211a 0%,#141311 58%,#0e0d0c 100%);
+      padding:env(safe-area-inset-top) 18px env(safe-area-inset-bottom);
+    }
+    .wrap{max-width:620px;margin:0 auto;padding:26px 0 42px}
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:22px;
+      font-family:system-ui,-apple-system,sans-serif;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .brand{
+      font-size:13px;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+      font-weight:700;
+      color:var(--gold);
+    }
+    .header-right{display:flex;align-items:center;gap:10px}
+    .day{font-size:12px;color:var(--muted);text-transform:capitalize}
+    .notify-btn{
+      background:var(--surface-hi);
+      color:var(--gold);
+      border:1px solid var(--gold-dim);
+      padding:7px 13px;
+      font-size:12px;
+      font-weight:600;
+      border-radius:999px;
+    }
+    .notify-btn.subscribed{
+      background:transparent;
+      color:var(--muted);
+      border:1px solid var(--border);
+    }
+    .hero{
+      position:relative;
+      overflow:hidden;
+      border-radius:24px;
+      min-height:210px;
+      background:linear-gradient(155deg,#2a231b 0%,#1b1815 55%,#2d1b18 100%);
+      border:1px solid var(--border);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+      padding:22px 24px;
+      margin-bottom:20px;
+      box-shadow:0 18px 42px #00000066;
+    }
+    .hero-emblem{
+      position:absolute;
+      right:-18px;
+      top:-18px;
+      width:190px;
+      height:190px;
+      border-radius:50%;
+      border:1px solid #c9a56a26;
+      box-shadow:inset 0 0 40px #c9a56a14;
+      pointer-events:none;
+    }
+    .hero-emblem::after{
+      content:"";
+      position:absolute;
+      inset:24px;
+      border-radius:50%;
+      border:1px dashed #c9a56a33;
+    }
+    .hero-top{
+      font:600 11px system-ui,-apple-system,sans-serif;
+      letter-spacing:.22em;
+      text-transform:uppercase;
+      color:var(--gold);
+      opacity:.9;
+    }
+    .hero-label{
+      position:relative;
+      z-index:2;
+      font:600 12px/1.5 system-ui,-apple-system,sans-serif;
+      letter-spacing:.16em;
+      text-transform:uppercase;
+      color:#d5cbb9;
+    }
+    .card{
+      background:linear-gradient(180deg,var(--surface) 0%,#181614 100%);
+      border:1px solid var(--border);
+      border-top:2px solid var(--gold-dim);
+      border-radius:24px;
+      padding:28px 24px 24px;
+      box-shadow:0 18px 44px #00000055;
+    }
+    .eyebrow{
+      font:600 11px system-ui,-apple-system,sans-serif;
+      letter-spacing:.2em;
+      text-transform:uppercase;
+      color:var(--gold);
+      margin-bottom:18px;
+    }
+    blockquote{
+      font-size:clamp(25px,5.8vw,36px);
+      line-height:1.24;
+      letter-spacing:-.02em;
+      margin:0 0 20px;
+      color:#f4efe6;
+    }
+    .reflection{
+      font:15px/1.65 system-ui,-apple-system,sans-serif;
+      color:#b8afa1;
+      margin:0;
+      padding-top:16px;
+      border-top:1px solid var(--border);
+    }
+    .actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+    button{
+      border:0;
+      border-radius:999px;
+      padding:11px 16px;
+      font:600 13px system-ui,-apple-system,sans-serif;
+      cursor:pointer;
+      transition:transform .12s,opacity .15s;
+    }
+    .primary{
+      background:linear-gradient(135deg,#b58d4f 0%,#8f6b34 100%);
+      color:#141210;
+    }
+    .secondary{
+      background:var(--surface-hi);
+      color:#dfd7c8;
+      border:1px solid var(--border);
+    }
+    button:active{transform:scale(.97)}
+    nav{display:flex;gap:8px;margin:22px 0 14px;font-family:system-ui,-apple-system,sans-serif}
+    .tab{
+      background:transparent;
+      color:var(--muted);
+      padding:9px 14px;
+      border:1px solid transparent;
+    }
+    .tab.active{
+      background:var(--surface-hi);
+      color:var(--gold);
+      border-color:var(--border);
+    }
+    .section{display:none}.section.active{display:block}
+    .section-title{font-size:20px;margin:18px 0 12px;color:#e6dec8}
+    .list{display:grid;gap:10px}
+    .item{
+      background:var(--surface);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px 17px;
+    }
+    .item p{font-size:18px;line-height:1.35;margin:0 0 9px;color:#f1ece1}
+    .item small{font:12px/1.45 system-ui,-apple-system,sans-serif;color:var(--muted);display:block}
+    .item button{margin-top:10px;padding:7px 12px;font-size:12px}
+    .empty{
+      font:14px/1.6 system-ui,-apple-system,sans-serif;
+      color:#afa698;
+      background:var(--surface);
+      border:1px solid var(--border);
+      padding:18px;
+      border-radius:18px;
+    }
+    footer{
+      text-align:center;
+      font:12px system-ui,-apple-system,sans-serif;
+      letter-spacing:.08em;
+      color:#7a7266;
+      margin-top:30px;
+    }
+    .toast{
+      position:fixed;
+      bottom:calc(18px + env(safe-area-inset-bottom));
+      left:50%;
+      transform:translateX(-50%);
+      background:#26221c;
+      color:var(--gold);
+      border:1px solid var(--gold-dim);
+      padding:11px 18px;
+      border-radius:99px;
+      font:600 13px system-ui,-apple-system,sans-serif;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s;
+      z-index:50;
+      text-align:center;
+      max-width:90vw;
+      box-shadow:0 10px 28px #00000080;
+    }
+    .toast.show{opacity:1}
+  </style>
+
+  <!-- OneSignal Web SDK v16 -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "1e41f3b5-1861-4298-9f9c-27a8d46bb6e0",
+        serviceWorkerParam: { scope: "/un-buen-dia/" },
+        serviceWorkerPath: "/un-buen-dia/OneSignalSDKWorker.js"
+      });
+
+      const btn = document.getElementById("notify-btn");
+      const toastEl = document.getElementById("toast");
+
+      function showNotifyToast(msg) {
+        if (!toastEl) return;
+        toastEl.textContent = msg;
+        toastEl.classList.add("show");
+        setTimeout(() => toastEl.classList.remove("show"), 3200);
+      }
+
+      function hasPermission() {
+        const nativeGranted = ("Notification" in window) && Notification.permission === "granted";
+        return Boolean(OneSignal.Notifications.permission || nativeGranted);
+      }
+
+      function updateNotifyButton() {
+        if (!btn) return;
+        if (hasPermission()) {
+          btn.textContent = "🔔 Activas";
+          btn.classList.add("subscribed");
+        } else {
+          btn.textContent = "🔔 Activar aviso diario";
+          btn.classList.remove("subscribed");
+        }
+      }
+
+      updateNotifyButton();
+      setTimeout(updateNotifyButton, 800);
+      OneSignal.Notifications.addEventListener("permissionChange", updateNotifyButton);
+      OneSignal.User.PushSubscription.addEventListener("change", updateNotifyButton);
+
+      if (btn) {
+        btn.addEventListener("click", async () => {
+          const isStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+          if (!isStandalone) {
+            showNotifyToast("Primero tocá Compartir → Añadir a pantalla de inicio y abrila desde ahí.");
+            return;
+          }
+          if (("Notification" in window) && Notification.permission === "denied") {
+            showNotifyToast("Tenés las notificaciones bloqueadas en Ajustes > Notificaciones > Un Buen Día.");
+            return;
+          }
+          if (hasPermission()) {
+            await OneSignal.User.PushSubscription.optIn();
+            updateNotifyButton();
+            showNotifyToast("Notificaciones activas y sincronizadas.");
+            return;
+          }
+          try {
+            await OneSignal.Notifications.requestPermission();
+            await OneSignal.User.PushSubscription.optIn();
+          } catch (e) {
+            showNotifyToast("No se pudo activar: " + (e?.message || "reintentá"));
+          }
+          updateNotifyButton();
+        });
+      }
+    });
+  </script>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <div class="brand">⚔ UN BUEN DÍA</div>
+    <div class="header-right">
+      <button class="notify-btn" id="notify-btn" type="button">🔔 Activar aviso diario</button>
+      <div class="day" id="date"></div>
+    </div>
+  </header>
+  <section class="hero" aria-label="Temple estoico">
+    <div class="hero-emblem"></div>
+    <div class="hero-top">MEMENTO MORI · AMOR FATI</div>
+    <div class="hero-label">Entrá a la arena con calma. Dominá tu mente y el día es tuyo.</div>
+  </section>
+  <section class="card">
+    <div class="eyebrow">Principio del día · <span id="number"></span></div>
+    <blockquote id="quote"></blockquote>
+    <p class="reflection" id="reflection"></p>
+    <div class="actions">
+      <button class="primary" id="favorite">☆ Guardar sentencia</button>
+      <button class="secondary" id="share">Compartir</button>
+      <button class="secondary" id="copy">Copiar</button>
+    </div>
+  </section>
+  <nav>
+    <button class="tab active" data-tab="today">Hoy</button>
+    <button class="tab" data-tab="favorites">Guardadas</button>
+    <button class="tab" data-tab="history">Jornadas anteriores</button>
+  </nav>
+  <section class="section active" id="today"><p class="empty">No esperes a que la tormenta pase para demostrar quién sos. Sostené tu estándar hoy.</p></section>
+  <section class="section" id="favorites"><h2 class="section-title">Sentencias guardadas</h2><div class="list" id="favorite-list"></div></section>
+  <section class="section" id="history"><h2 class="section-title">Camino recorrido</h2><div class="list" id="history-list"></div></section>
+  <footer>Forjado para templar tus mañanas. ⚔️</footer>
+</main>
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body></html>
